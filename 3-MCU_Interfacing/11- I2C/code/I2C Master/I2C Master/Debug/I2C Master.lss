@@ -1,0 +1,219 @@
+
+I2C Master.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         0000010a  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  00800060  0000015e  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .comment      00000030  00000000  00000000  0000015e  2**0
+                  CONTENTS, READONLY
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000190  2**2
+                  CONTENTS, READONLY
+  4 .debug_aranges 00000090  00000000  00000000  000001cc  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   000007be  00000000  00000000  0000025c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 000005ec  00000000  00000000  00000a1a  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   000003e6  00000000  00000000  00001006  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  000000e8  00000000  00000000  000013ec  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    000003bd  00000000  00000000  000014d4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    000000d9  00000000  00000000  00001891  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000070  00000000  00000000  0000196a  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54	; 0x54 <__ctors_end>
+   4:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   8:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  10:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  14:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  18:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  1c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  20:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  24:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  28:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  2c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  30:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  34:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  38:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  3c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  40:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  44:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  48:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  4c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  50:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d8 e0       	ldi	r29, 0x08	; 8
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+  60:	0e 94 72 00 	call	0xe4	; 0xe4 <main>
+  64:	0c 94 83 00 	jmp	0x106	; 0x106 <_exit>
+
+00000068 <__bad_interrupt>:
+  68:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+0000006c <I2C_Master_init>:
+	// Wait till start condition is transmitted
+	while (!(TWCR & (1 << TWINT))) ;
+	
+	// Check for the acknowledgment
+	while ((TWSR & 0xF8) != REPEATED_START_TRANSMIT_ACK) ;
+}
+  6c:	80 b9       	out	0x00, r24	; 0
+  6e:	61 30       	cpi	r22, 0x01	; 1
+  70:	49 f0       	breq	.+18     	; 0x84 <I2C_Master_init+0x18>
+  72:	28 f0       	brcs	.+10     	; 0x7e <I2C_Master_init+0x12>
+  74:	62 30       	cpi	r22, 0x02	; 2
+  76:	41 f0       	breq	.+16     	; 0x88 <I2C_Master_init+0x1c>
+  78:	63 30       	cpi	r22, 0x03	; 3
+  7a:	41 f0       	breq	.+16     	; 0x8c <I2C_Master_init+0x20>
+  7c:	08 95       	ret
+  7e:	81 b1       	in	r24, 0x01	; 1
+  80:	81 b9       	out	0x01, r24	; 1
+  82:	08 95       	ret
+  84:	08 9a       	sbi	0x01, 0	; 1
+  86:	08 95       	ret
+  88:	09 9a       	sbi	0x01, 1	; 1
+  8a:	08 95       	ret
+  8c:	81 b1       	in	r24, 0x01	; 1
+  8e:	83 60       	ori	r24, 0x03	; 3
+  90:	81 b9       	out	0x01, r24	; 1
+  92:	08 95       	ret
+
+00000094 <I2C_start>:
+  94:	84 ea       	ldi	r24, 0xA4	; 164
+  96:	86 bf       	out	0x36, r24	; 54
+  98:	06 b6       	in	r0, 0x36	; 54
+  9a:	07 fe       	sbrs	r0, 7
+  9c:	fd cf       	rjmp	.-6      	; 0x98 <I2C_start+0x4>
+  9e:	81 b1       	in	r24, 0x01	; 1
+  a0:	88 7f       	andi	r24, 0xF8	; 248
+  a2:	88 30       	cpi	r24, 0x08	; 8
+  a4:	e1 f7       	brne	.-8      	; 0x9e <I2C_start+0xa>
+  a6:	08 95       	ret
+
+000000a8 <I2C_stop>:
+inputs		: none
+outputs		: none
+*/
+void I2C_stop (void) {
+	// Clear TWI interrupt flag, Put start condition on SDA, Enable TWI
+	TWCR = (1 << TWINT)|(1 << TWSTO)|(1 << TWEN);
+  a8:	84 e9       	ldi	r24, 0x94	; 148
+  aa:	86 bf       	out	0x36, r24	; 54
+	
+	// Wait till stop condition is transmitted
+	while (!(TWCR & (1 << TWSTO))) ;
+  ac:	06 b6       	in	r0, 0x36	; 54
+  ae:	04 fe       	sbrs	r0, 4
+  b0:	fd cf       	rjmp	.-6      	; 0xac <I2C_stop+0x4>
+}
+  b2:	08 95       	ret
+
+000000b4 <I2C_write_address>:
+inputs		: slave address
+outputs		: none
+*/
+void I2C_write_address (unsigned char slave_address) {
+	// Address and write instruction
+	TWDR = slave_address + WRITE ; 
+  b4:	83 b9       	out	0x03, r24	; 3
+	
+	// Clear TWI interrupt flag,Enable TWI
+	TWCR |= (1 << TWINT) | (1 << TWEN) ; 
+  b6:	86 b7       	in	r24, 0x36	; 54
+  b8:	84 68       	ori	r24, 0x84	; 132
+  ba:	86 bf       	out	0x36, r24	; 54
+	
+	// Wait till complete TWDR byte transmitted
+	while (!(TWCR & (1 << TWINT))) ;
+  bc:	06 b6       	in	r0, 0x36	; 54
+  be:	07 fe       	sbrs	r0, 7
+  c0:	fd cf       	rjmp	.-6      	; 0xbc <I2C_write_address+0x8>
+	
+	// Check for the acknowledgment
+	while ((TWSR & 0xF8) != ADDR_OP_ACK) ;
+  c2:	81 b1       	in	r24, 0x01	; 1
+  c4:	88 7f       	andi	r24, 0xF8	; 248
+  c6:	88 31       	cpi	r24, 0x18	; 24
+  c8:	e1 f7       	brne	.-8      	; 0xc2 <I2C_write_address+0xe>
+}
+  ca:	08 95       	ret
+
+000000cc <I2C_Master_write_data>:
+Description : function to send byte data by master (Master - Sender)
+inputs		: none
+outputs		: none
+*/
+void I2C_Master_write_data (unsigned char data) {
+	TWDR = data ; 
+  cc:	83 b9       	out	0x03, r24	; 3
+	
+	// Clear TWI interrupt flag,Enable TWI
+	TWCR |= (1 << TWINT) | (1 << TWEN) ;
+  ce:	86 b7       	in	r24, 0x36	; 54
+  d0:	84 68       	ori	r24, 0x84	; 132
+  d2:	86 bf       	out	0x36, r24	; 54
+	
+	// Wait till complete TWDR byte transmitted
+	while (!(TWCR & (1 << TWINT))) ;
+  d4:	06 b6       	in	r0, 0x36	; 54
+  d6:	07 fe       	sbrs	r0, 7
+  d8:	fd cf       	rjmp	.-6      	; 0xd4 <I2C_Master_write_data+0x8>
+	
+	// Check for the acknowledgment
+	while ((TWSR & 0xF8) != M_DATA_TRANSMIT_ACK) ;
+  da:	81 b1       	in	r24, 0x01	; 1
+  dc:	88 7f       	andi	r24, 0xF8	; 248
+  de:	88 32       	cpi	r24, 0x28	; 40
+  e0:	e1 f7       	brne	.-8      	; 0xda <I2C_Master_write_data+0xe>
+}
+  e2:	08 95       	ret
+
+000000e4 <main>:
+#define PORTB_REG			(*((volatile unsigned char*)0x38))
+#define PINB_REG			(*((volatile unsigned char*)0x36))
+
+int main(void)
+{
+	DDRB_REG = 0xFF ;
+  e4:	8f ef       	ldi	r24, 0xFF	; 255
+  e6:	87 bb       	out	0x17, r24	; 23
+	
+	I2C_Master_init(1 , _1_div);  // Function to initialize TWI
+  e8:	60 e0       	ldi	r22, 0x00	; 0
+  ea:	81 e0       	ldi	r24, 0x01	; 1
+  ec:	0e 94 36 00 	call	0x6c	; 0x6c <I2C_Master_init>
+	while(1)
+	{		
+		I2C_start() ;  // Function to send start condition
+  f0:	0e 94 4a 00 	call	0x94	; 0x94 <I2C_start>
+		I2C_write_address(0x10) ; // Function to write address and data direction bit(write) on SDA
+  f4:	80 e1       	ldi	r24, 0x10	; 16
+  f6:	0e 94 5a 00 	call	0xb4	; 0xb4 <I2C_write_address>
+		I2C_Master_write_data(4);      // Function to write data in slave
+  fa:	84 e0       	ldi	r24, 0x04	; 4
+  fc:	0e 94 66 00 	call	0xcc	; 0xcc <I2C_Master_write_data>
+		I2C_stop(); // Function to send stop condition
+ 100:	0e 94 54 00 	call	0xa8	; 0xa8 <I2C_stop>
+ 104:	f5 cf       	rjmp	.-22     	; 0xf0 <main+0xc>
+
+00000106 <_exit>:
+ 106:	f8 94       	cli
+
+00000108 <__stop_program>:
+ 108:	ff cf       	rjmp	.-2      	; 0x108 <__stop_program>

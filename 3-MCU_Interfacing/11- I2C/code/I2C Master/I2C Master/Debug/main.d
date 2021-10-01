@@ -1,0 +1,3 @@
+main.d main.o: .././main.c .././I2C.h
+
+.././I2C.h:
